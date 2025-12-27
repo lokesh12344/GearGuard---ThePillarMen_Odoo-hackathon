@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================
+         Scheduled Actions (Cron Jobs) for GearGuard
+         Automated maintenance workflow tasks
+    ============================================= -->
+
+    <!-- Cron Job: Check for Overdue Requests -->
+    <record id="ir_cron_check_overdue_requests" model="ir.cron">
+        <field name="name">GearGuard: Check Overdue Maintenance Requests</field>
+        <field name="model_id" ref="model_maintenance_request"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_check_overdue_requests()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="active" eval="True"/>
+        <field name="doall" eval="False"/>
+    </record>
+
+    <!-- Cron Job: Send Overdue Reminders -->
+    <record id="ir_cron_send_overdue_reminders" model="ir.cron">
+        <field name="name">GearGuard: Send Overdue Request Reminders</field>
+        <field name="model_id" ref="model_maintenance_request"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_send_overdue_reminders()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="active" eval="True"/>
+        <field name="doall" eval="False"/>
+    </record>
+
+    <!-- Cron Job: Check Warranty Expiry -->
+    <record id="ir_cron_check_warranty_expiry" model="ir.cron">
+        <field name="name">GearGuard: Check Equipment Warranty Expiry</field>
+        <field name="model_id" ref="model_maintenance_equipment"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_check_warranty_expiry()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">weeks</field>
+        <field name="numbercall">-1</field>
+        <field name="active" eval="True"/>
+        <field name="doall" eval="False"/>
+    </record>
+
+    <!-- Cron Job: Auto-generate Preventive Maintenance -->
+    <record id="ir_cron_generate_preventive_maintenance" model="ir.cron">
+        <field name="name">GearGuard: Generate Preventive Maintenance Requests</field>
+        <field name="model_id" ref="model_maintenance_equipment"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_generate_preventive_maintenance()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="active" eval="True"/>
+        <field name="doall" eval="False"/>
+    </record>
+
+    <!-- Cron Job: Update Request Statistics -->
+    <record id="ir_cron_update_statistics" model="ir.cron">
+        <field name="name">GearGuard: Update Maintenance Statistics</field>
+        <field name="model_id" ref="model_maintenance_request"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_update_statistics()</field>
+        <field name="interval_number">6</field>
+        <field name="interval_type">hours</field>
+        <field name="numbercall">-1</field>
+        <field name="active" eval="True"/>
+        <field name="doall" eval="False"/>
+    </record>
+
+</odoo>
