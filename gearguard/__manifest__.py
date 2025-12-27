@@ -52,6 +52,7 @@ Authors: ThePillarMen Team
         'base',
         'hr',
         'mail',
+        'web',
     ],
     'data': [
         # Security
@@ -70,6 +71,13 @@ Authors: ThePillarMen Team
         'data/email_templates.xml',
         'data/scheduled_actions.xml',
     ],
+    'assets': {
+        'web.assets_backend': [
+            'gearguard/static/src/css/gearguard.css',
+            'gearguard/static/src/js/gearguard_dashboard.js',
+            'gearguard/static/src/xml/gearguard_dashboard.xml',
+        ],
+    },
     'demo': [
         'data/demo_data.xml',
     ],
