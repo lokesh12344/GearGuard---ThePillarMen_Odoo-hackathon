@@ -1,0 +1,248 @@
+/** 
+ * GearGuard Custom Styles
+ * ======================
+ * Custom CSS for enhanced UI/UX
+ */
+
+/* ===========================
+   KANBAN CARD ENHANCEMENTS
+   =========================== */
+
+/* Overdue card styling */
+.o_kanban_record.border-danger {
+    background: linear-gradient(135deg, #fff5f5 0%, #ffffff 100%) !important;
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.2) !important;
+}
+
+/* Priority indicators */
+.o_kanban_record .o_priority .fa-star {
+    font-size: 14px;
+}
+
+/* Smooth hover effect on kanban cards */
+.o_kanban_record {
+    transition: all 0.2s ease-in-out;
+}
+
+.o_kanban_record:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* ===========================
+   STATUS BADGES
+   =========================== */
+
+/* Custom badge colors */
+.badge.bg-new {
+    background-color: #17a2b8 !important;
+}
+
+.badge.bg-in-progress {
+    background-color: #ffc107 !important;
+    color: #212529 !important;
+}
+
+.badge.bg-repaired {
+    background-color: #28a745 !important;
+}
+
+.badge.bg-scrap {
+    background-color: #dc3545 !important;
+}
+
+/* ===========================
+   FORM VIEW ENHANCEMENTS
+   =========================== */
+
+/* Section headers */
+.o_form_view .o_inner_group .o_group_header {
+    font-weight: 600;
+    color: #875A7B;
+    border-bottom: 2px solid #875A7B;
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+}
+
+/* Smart button styling */
+.oe_stat_button {
+    transition: all 0.2s ease;
+}
+
+.oe_stat_button:hover {
+    background-color: #f8f9fa !important;
+    border-color: #875A7B !important;
+}
+
+.oe_stat_button .o_stat_info .o_stat_value {
+    color: #875A7B;
+    font-weight: 700;
+}
+
+/* ===========================
+   RIBBON STYLING
+   =========================== */
+
+/* Overdue ribbon pulse animation */
+.web_ribbon.bg-danger {
+    animation: pulse-danger 2s infinite;
+}
+
+@keyframes pulse-danger {
+    0% {
+        box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(220, 53, 69, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
+    }
+}
+
+/* Scrap ribbon */
+.web_ribbon[title="SCRAPPED"] {
+    background-color: #6c757d !important;
+}
+
+/* ===========================
+   CALENDAR VIEW
+   =========================== */
+
+/* Event colors based on type */
+.o_calendar_renderer .fc-event {
+    border-radius: 4px;
+    border: none !important;
+    padding: 2px 6px;
+}
+
+/* Preventive = Green */
+.o_calendar_renderer .fc-event[data-request-type="preventive"] {
+    background-color: #28a745 !important;
+}
+
+/* Corrective = Orange */
+.o_calendar_renderer .fc-event[data-request-type="corrective"] {
+    background-color: #fd7e14 !important;
+}
+
+/* ===========================
+   DASHBOARD CARDS
+   =========================== */
+
+.o_kanban_dashboard .o_kanban_card_header {
+    background: linear-gradient(135deg, #875A7B 0%, #6a4562 100%);
+    color: white;
+    border-radius: 8px 8px 0 0;
+    padding: 12px 16px;
+}
+
+.o_kanban_dashboard .o_kanban_card_content {
+    padding: 16px;
+}
+
+/* Stat cards */
+.gearguard_stat_card {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.gearguard_stat_card:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+}
+
+.gearguard_stat_card .stat_value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #875A7B;
+}
+
+.gearguard_stat_card .stat_label {
+    color: #6c757d;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ===========================
+   PRIORITY COLORS IN LIST
+   =========================== */
+
+.o_list_view tr[data-priority="3"] {
+    background-color: #fff5f5 !important;
+}
+
+.o_list_view tr[data-priority="2"] {
+    background-color: #fff8e6 !important;
+}
+
+/* ===========================
+   MAINTENANCE TEAM CARDS
+   =========================== */
+
+.o_maintenance_team_kanban .oe_kanban_card {
+    border-left: 4px solid #875A7B;
+}
+
+.o_maintenance_team_kanban .o_kanban_primary_left .badge {
+    font-size: 1.1rem;
+    padding: 8px 16px;
+}
+
+/* ===========================
+   EQUIPMENT FORM IMAGE
+   =========================== */
+
+.o_form_view .oe_avatar {
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* ===========================
+   WARRANTY STATUS BADGES
+   =========================== */
+
+.badge[data-warranty="valid"] {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
+}
+
+.badge[data-warranty="expired"] {
+    background: linear-gradient(135deg, #dc3545 0%, #e83e8c 100%) !important;
+}
+
+/* ===========================
+   LOADING ANIMATION
+   =========================== */
+
+.gearguard_loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #875A7B;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ===========================
+   RESPONSIVE ADJUSTMENTS
+   =========================== */
+
+@media (max-width: 768px) {
+    .gearguard_stat_card .stat_value {
+        font-size: 1.8rem;
+    }
+    
+    .o_kanban_record {
+        margin-bottom: 8px;
+    }
+}
