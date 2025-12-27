@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ======================= -->
+    <!-- MENU STRUCTURE          -->
+    <!-- ======================= -->
+
+    <!-- Main Application Menu -->
+    <menuitem id="menu_gearguard_root"
+              name="GearGuard"
+              web_icon="gearguard,static/description/icon.png"
+              sequence="50"/>
+
+    <!-- ======================= -->
+    <!-- MAINTENANCE REQUESTS    -->
+    <!-- ======================= -->
+    <menuitem id="menu_maintenance_request_root"
+              name="Maintenance"
+              parent="menu_gearguard_root"
+              sequence="10"/>
+
+    <menuitem id="menu_maintenance_request_all"
+              name="All Requests"
+              parent="menu_maintenance_request_root"
+              action="action_maintenance_request"
+              sequence="10"/>
+
+    <menuitem id="menu_maintenance_request_calendar"
+              name="Maintenance Calendar"
+              parent="menu_maintenance_request_root"
+              action="action_maintenance_request_calendar"
+              sequence="20"/>
+
+    <!-- ======================= -->
+    <!-- EQUIPMENT               -->
+    <!-- ======================= -->
+    <menuitem id="menu_equipment_root"
+              name="Equipment"
+              parent="menu_gearguard_root"
+              sequence="20"/>
+
+    <menuitem id="menu_equipment_all"
+              name="All Equipment"
+              parent="menu_equipment_root"
+              action="action_maintenance_equipment"
+              sequence="10"/>
+
+    <menuitem id="menu_equipment_category"
+              name="Categories"
+              parent="menu_equipment_root"
+              action="action_equipment_category"
+              sequence="20"/>
+
+    <!-- ======================= -->
+    <!-- TEAMS                   -->
+    <!-- ======================= -->
+    <menuitem id="menu_maintenance_team"
+              name="Maintenance Teams"
+              parent="menu_gearguard_root"
+              action="action_maintenance_team"
+              sequence="30"/>
+
+    <!-- ======================= -->
+    <!-- REPORTING               -->
+    <!-- ======================= -->
+    <menuitem id="menu_reporting_root"
+              name="Reporting"
+              parent="menu_gearguard_root"
+              sequence="40"/>
+
+    <!-- Reporting: Requests Pivot -->
+    <record id="action_maintenance_request_pivot" model="ir.actions.act_window">
+        <field name="name">Maintenance Analysis</field>
+        <field name="res_model">maintenance.request</field>
+        <field name="view_mode">pivot,graph</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No data to analyze yet
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_reporting_requests"
+              name="Maintenance Analysis"
+              parent="menu_reporting_root"
+              action="action_maintenance_request_pivot"
+              sequence="10"/>
+
+    <!-- ======================= -->
+    <!-- CONFIGURATION           -->
+    <!-- ======================= -->
+    <menuitem id="menu_configuration_root"
+              name="Configuration"
+              parent="menu_gearguard_root"
+              sequence="99"
+              groups="base.group_system"/>
+
+    <menuitem id="menu_configuration_categories"
+              name="Equipment Categories"
+              parent="menu_configuration_root"
+              action="action_equipment_category"
+              sequence="10"/>
+
+    <menuitem id="menu_configuration_teams"
+              name="Maintenance Teams"
+              parent="menu_configuration_root"
+              action="action_maintenance_team"
+              sequence="20"/>
+
+</odoo>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ======================= -->
+    <!-- SECURITY GROUPS         -->
+    <!-- ======================= -->
+
+    <!-- Module Category -->
+    <record id="module_category_gearguard" model="ir.module.category">
+        <field name="name">GearGuard Maintenance</field>
+        <field name="description">Module for managing maintenance equipment and requests.</field>
+        <field name="sequence">50</field>
+    </record>
+
+    <!-- User Group: Technician (Basic User) -->
+    <record id="group_gearguard_user" model="res.groups">
+        <field name="name">Technician</field>
+        <field name="category_id" ref="module_category_gearguard"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="comment">
+            Basic user who can:
+            - View all equipment and requests
+            - Create and edit maintenance requests
+            - Update request status
+        </field>
+    </record>
+
+    <!-- User Group: Manager (Full Access) -->
+    <record id="group_gearguard_manager" model="res.groups">
+        <field name="name">Manager</field>
+        <field name="category_id" ref="module_category_gearguard"/>
+        <field name="implied_ids" eval="[(4, ref('group_gearguard_user'))]"/>
+        <field name="comment">
+            Manager who can:
+            - Full access to all module features
+            - Create/edit/delete equipment and categories
+            - Manage maintenance teams
+            - Access reports and configuration
+        </field>
+    </record>
+
+    <!-- ======================= -->
+    <!-- RECORD RULES            -->
+    <!-- ======================= -->
+
+    <!-- Rule: Users can only edit requests assigned to their team -->
+    <record id="rule_request_team_edit" model="ir.rule">
+        <field name="name">Maintenance Request: Team Members Edit Own</field>
+        <field name="model_id" ref="model_maintenance_request"/>
+        <field name="domain_force">[
+            '|',
+            ('technician_id', '=', user.id),
+            ('team_id.member_ids', 'in', user.id)
+        ]</field>
+        <field name="groups" eval="[(4, ref('group_gearguard_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!-- Rule: Managers can access all records -->
+    <record id="rule_request_manager_all" model="ir.rule">
+        <field name="name">Maintenance Request: Manager Full Access</field>
+        <field name="model_id" ref="model_maintenance_request"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_gearguard_manager'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <!-- Rule: Users can see all equipment (read only for non-team) -->
+    <record id="rule_equipment_read_all" model="ir.rule">
+        <field name="name">Maintenance Equipment: Read All</field>
+        <field name="model_id" ref="model_maintenance_equipment"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_gearguard_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!-- Rule: Users can edit equipment they're responsible for -->
+    <record id="rule_equipment_team_edit" model="ir.rule">
+        <field name="name">Maintenance Equipment: Team Edit</field>
+        <field name="model_id" ref="model_maintenance_equipment"/>
+        <field name="domain_force">[('team_id.member_ids', 'in', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_gearguard_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!-- Rule: Managers full access to equipment -->
+    <record id="rule_equipment_manager_all" model="ir.rule">
+        <field name="name">Maintenance Equipment: Manager Full Access</field>
+        <field name="model_id" ref="model_maintenance_equipment"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_gearguard_manager'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+</odoo>
