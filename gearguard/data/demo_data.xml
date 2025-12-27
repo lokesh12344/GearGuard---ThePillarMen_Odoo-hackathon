@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ======================= -->
+        <!-- DEMO: EQUIPMENT CATEGORIES -->
+        <!-- ======================= -->
+
+        <record id="category_cnc_machine" model="equipment.category">
+            <field name="name">CNC Machines</field>
+            <field name="description">Computer Numerical Control machines for precision manufacturing operations including milling, turning, and drilling.</field>
+        </record>
+
+        <record id="category_laptop" model="equipment.category">
+            <field name="name">Laptops</field>
+            <field name="description">Portable computers for office work, development, and remote work purposes.</field>
+        </record>
+
+        <record id="category_vehicle" model="equipment.category">
+            <field name="name">Vehicles</field>
+            <field name="description">Company vehicles including cars, trucks, and forklifts.</field>
+        </record>
+
+        <record id="category_hvac" model="equipment.category">
+            <field name="name">HVAC Systems</field>
+            <field name="description">Heating, Ventilation, and Air Conditioning systems for building climate control.</field>
+        </record>
+
+        <record id="category_printer" model="equipment.category">
+            <field name="name">Printers</field>
+            <field name="description">Office printers, scanners, and multifunction devices.</field>
+        </record>
+
+        <!-- ======================= -->
+        <!-- DEMO: MAINTENANCE TEAMS -->
+        <!-- ======================= -->
+
+        <record id="team_mechanics" model="maintenance.team">
+            <field name="name">Mechanics</field>
+            <field name="color">1</field>
+        </record>
+
+        <record id="team_it_support" model="maintenance.team">
+            <field name="name">IT Support</field>
+            <field name="color">4</field>
+        </record>
+
+        <record id="team_electricians" model="maintenance.team">
+            <field name="name">Electricians</field>
+            <field name="color">5</field>
+        </record>
+
+        <record id="team_facilities" model="maintenance.team">
+            <field name="name">Facilities Management</field>
+            <field name="color">10</field>
+        </record>
+
+        <!-- ======================= -->
+        <!-- DEMO: EQUIPMENT          -->
+        <!-- ======================= -->
+
+        <!-- CNC Machines -->
+        <record id="equipment_cnc_mill_01" model="maintenance.equipment">
+            <field name="name">CNC Milling Machine #01</field>
+            <field name="serial_number">CNC-MILL-2023-001</field>
+            <field name="category_id" ref="category_cnc_machine"/>
+            <field name="team_id" ref="team_mechanics"/>
+            <field name="location">Production Floor - Section A</field>
+            <field name="purchase_date">2023-03-15</field>
+            <field name="warranty_expiry">2026-03-15</field>
+            <field name="cost">85000.00</field>
+            <field name="notes">&lt;p&gt;High-precision 5-axis milling machine. Requires monthly lubrication and quarterly calibration.&lt;/p&gt;</field>
+        </record>
+
+        <record id="equipment_cnc_lathe_01" model="maintenance.equipment">
+            <field name="name">CNC Lathe #01</field>
+            <field name="serial_number">CNC-LATHE-2022-001</field>
+            <field name="category_id" ref="category_cnc_machine"/>
+            <field name="team_id" ref="team_mechanics"/>
+            <field name="location">Production Floor - Section B</field>
+            <field name="purchase_date">2022-06-20</field>
+            <field name="warranty_expiry">2025-06-20</field>
+            <field name="cost">65000.00</field>
+        </record>
+
+        <!-- Laptops -->
+        <record id="equipment_laptop_dell_01" model="maintenance.equipment">
+            <field name="name">Dell Latitude 5520</field>
+            <field name="serial_number">DELL-LAT-2024-001</field>
+            <field name="category_id" ref="category_laptop"/>
+            <field name="team_id" ref="team_it_support"/>
+            <field name="location">Office Building - Floor 2</field>
+            <field name="purchase_date">2024-01-10</field>
+            <field name="warranty_expiry">2027-01-10</field>
+            <field name="cost">1200.00</field>
+        </record>
+
+        <record id="equipment_laptop_hp_01" model="maintenance.equipment">
+            <field name="name">HP EliteBook 840</field>
+            <field name="serial_number">HP-ELITE-2023-042</field>
+            <field name="category_id" ref="category_laptop"/>
+            <field name="team_id" ref="team_it_support"/>
+            <field name="location">Office Building - Floor 3</field>
+            <field name="purchase_date">2023-08-22</field>
+            <field name="warranty_expiry">2026-08-22</field>
+            <field name="cost">1350.00</field>
+        </record>
+
+        <!-- Vehicles -->
+        <record id="equipment_forklift_01" model="maintenance.equipment">
+            <field name="name">Toyota Forklift 8FGU25</field>
+            <field name="serial_number">TOYOTA-FORK-2021-001</field>
+            <field name="category_id" ref="category_vehicle"/>
+            <field name="team_id" ref="team_mechanics"/>
+            <field name="location">Warehouse</field>
+            <field name="purchase_date">2021-04-05</field>
+            <field name="warranty_expiry">2024-04-05</field>
+            <field name="cost">32000.00</field>
+            <field name="notes">&lt;p&gt;Propane-powered forklift. 5000 lb capacity. Daily inspection required.&lt;/p&gt;</field>
+        </record>
+
+        <record id="equipment_delivery_van" model="maintenance.equipment">
+            <field name="name">Ford Transit Van</field>
+            <field name="serial_number">FORD-VAN-2022-003</field>
+            <field name="category_id" ref="category_vehicle"/>
+            <field name="team_id" ref="team_mechanics"/>
+            <field name="location">Parking Lot B</field>
+            <field name="purchase_date">2022-09-12</field>
+            <field name="warranty_expiry">2025-09-12</field>
+            <field name="cost">45000.00</field>
+        </record>
+
+        <!-- HVAC -->
+        <record id="equipment_hvac_rooftop" model="maintenance.equipment">
+            <field name="name">Carrier Rooftop HVAC Unit</field>
+            <field name="serial_number">CARRIER-RTU-2020-001</field>
+            <field name="category_id" ref="category_hvac"/>
+            <field name="team_id" ref="team_electricians"/>
+            <field name="location">Main Building - Rooftop</field>
+            <field name="purchase_date">2020-11-30</field>
+            <field name="warranty_expiry">2025-11-30</field>
+            <field name="cost">18000.00</field>
+            <field name="notes">&lt;p&gt;20-ton capacity. Filter change every 3 months. Annual refrigerant check.&lt;/p&gt;</field>
+        </record>
+
+        <!-- ======================= -->
+        <!-- DEMO: MAINTENANCE REQUESTS -->
+        <!-- ======================= -->
+
+        <!-- New Request -->
+        <record id="request_cnc_mill_oil" model="maintenance.request">
+            <field name="name">Oil leak detected</field>
+            <field name="equipment_id" ref="equipment_cnc_mill_01"/>
+            <field name="category_id" ref="category_cnc_machine"/>
+            <field name="team_id" ref="team_mechanics"/>
+            <field name="request_type">corrective</field>
+            <field name="priority">2</field>
+            <field name="state">new</field>
+            <field name="scheduled_date" eval="(DateTime.now() + timedelta(days=2)).strftime('%Y-%m-%d 09:00:00')"/>
+            <field name="description">&lt;p&gt;Operator reported oil leak near the spindle assembly. Machine still operational but needs inspection.&lt;/p&gt;</field>
+        </record>
+
+        <!-- In Progress Request -->
+        <record id="request_laptop_screen" model="maintenance.request">
+            <field name="name">Screen flickering issue</field>
+            <field name="equipment_id" ref="equipment_laptop_dell_01"/>
+            <field name="category_id" ref="category_laptop"/>
+            <field name="team_id" ref="team_it_support"/>
+            <field name="request_type">corrective</field>
+            <field name="priority">1</field>
+            <field name="state">in_progress</field>
+            <field name="start_date" eval="(DateTime.now() - timedelta(hours=2)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="scheduled_date" eval="DateTime.now().strftime('%Y-%m-%d 14:00:00')"/>
+            <field name="description">&lt;p&gt;User reports intermittent screen flickering. Possible display cable issue.&lt;/p&gt;</field>
+        </record>
+
+        <!-- Preventive Maintenance -->
+        <record id="request_forklift_inspection" model="maintenance.request">
+            <field name="name">Monthly safety inspection</field>
+            <field name="equipment_id" ref="equipment_forklift_01"/>
+            <field name="category_id" ref="category_vehicle"/>
+            <field name="team_id" ref="team_mechanics"/>
+            <field name="request_type">preventive</field>
+            <field name="priority">1</field>
+            <field name="state">new</field>
+            <field name="scheduled_date" eval="(DateTime.now() + timedelta(days=5)).strftime('%Y-%m-%d 08:00:00')"/>
+            <field name="description">&lt;p&gt;Routine monthly inspection including:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Brake check&lt;/li&gt;&lt;li&gt;Hydraulic fluid level&lt;/li&gt;&lt;li&gt;Tire condition&lt;/li&gt;&lt;li&gt;Safety lights&lt;/li&gt;&lt;/ul&gt;</field>
+        </record>
+
+        <!-- Completed Request -->
+        <record id="request_hvac_filter" model="maintenance.request">
+            <field name="name">Quarterly filter replacement</field>
+            <field name="equipment_id" ref="equipment_hvac_rooftop"/>
+            <field name="category_id" ref="category_hvac"/>
+            <field name="team_id" ref="team_electricians"/>
+            <field name="request_type">preventive</field>
+            <field name="priority">0</field>
+            <field name="state">repaired</field>
+            <field name="scheduled_date" eval="(DateTime.now() - timedelta(days=3)).strftime('%Y-%m-%d 10:00:00')"/>
+            <field name="start_date" eval="(DateTime.now() - timedelta(days=3)).strftime('%Y-%m-%d 10:30:00')"/>
+            <field name="end_date" eval="(DateTime.now() - timedelta(days=3)).strftime('%Y-%m-%d 11:45:00')"/>
+            <field name="duration">1.25</field>
+            <field name="description">&lt;p&gt;Replaced air filters as per quarterly maintenance schedule. System running efficiently.&lt;/p&gt;</field>
+        </record>
+
+        <!-- Urgent Request (Overdue) -->
+        <record id="request_van_brake" model="maintenance.request">
+            <field name="name">Brake warning light on</field>
+            <field name="equipment_id" ref="equipment_delivery_van"/>
+            <field name="category_id" ref="category_vehicle"/>
+            <field name="team_id" ref="team_mechanics"/>
+            <field name="request_type">corrective</field>
+            <field name="priority">3</field>
+            <field name="state">new</field>
+            <field name="scheduled_date" eval="(DateTime.now() - timedelta(days=1)).strftime('%Y-%m-%d 08:00:00')"/>
+            <field name="description">&lt;p&gt;&lt;strong&gt;URGENT:&lt;/strong&gt; Brake warning light illuminated. Vehicle parked and not in use until inspection completed.&lt;/p&gt;</field>
+        </record>
+
+        <!-- Preventive - Future -->
+        <record id="request_cnc_calibration" model="maintenance.request">
+            <field name="name">Annual calibration</field>
+            <field name="equipment_id" ref="equipment_cnc_lathe_01"/>
+            <field name="category_id" ref="category_cnc_machine"/>
+            <field name="team_id" ref="team_mechanics"/>
+            <field name="request_type">preventive</field>
+            <field name="priority">1</field>
+            <field name="state">new</field>
+            <field name="scheduled_date" eval="(DateTime.now() + timedelta(days=14)).strftime('%Y-%m-%d 09:00:00')"/>
+            <field name="description">&lt;p&gt;Annual precision calibration as per manufacturer specifications. Estimated downtime: 4 hours.&lt;/p&gt;</field>
+        </record>
+
+    </data>
+</odoo>
