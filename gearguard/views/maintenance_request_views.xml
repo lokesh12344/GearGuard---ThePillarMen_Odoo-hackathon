@@ -232,8 +232,24 @@
                 <field name="name"/>
                 <field name="equipment_id"/>
                 <field name="technician_id" widget="many2one_avatar_user"/>
+                <field name="request_type"/>
                 <field name="state"/>
             </calendar>
+        </field>
+    </record>
+
+    <!-- Calendar Action for Preventive Maintenance Only -->
+    <record id="action_maintenance_calendar_preventive" model="ir.actions.act_window">
+        <field name="name">Preventive Maintenance Schedule</field>
+        <field name="res_model">maintenance.request</field>
+        <field name="view_mode">calendar,kanban,tree,form</field>
+        <field name="domain">[('request_type', '=', 'preventive')]</field>
+        <field name="context">{'default_request_type': 'preventive'}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Schedule your first preventive maintenance!
+            </p>
+            <p>Click on a date to create a new scheduled maintenance.</p>
         </field>
     </record>
 

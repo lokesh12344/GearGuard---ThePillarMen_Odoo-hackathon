@@ -31,6 +31,12 @@
               action="action_maintenance_request_calendar"
               sequence="20"/>
 
+    <menuitem id="menu_maintenance_request_preventive"
+              name="Preventive Schedule"
+              parent="menu_maintenance_request_root"
+              action="action_maintenance_calendar_preventive"
+              sequence="25"/>
+
     <!-- ======================= -->
     <!-- EQUIPMENT               -->
     <!-- ======================= -->
