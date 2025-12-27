@@ -418,3 +418,66 @@ class MaintenanceRequest(models.Model):
                 'technician_id': self.env.user.id,
             })
             record.message_post(body=f'Assigned to {self.env.user.name}')
+
+    # ---------------------------
+    # Scheduled Actions (Cron Jobs)
+    # ---------------------------
+    @api.model
+    def _cron_check_overdue_requests(self):
+        """
+        Cron job: Check for overdue maintenance requests.
+        Runs daily to update overdue status and log warnings.
+        """
+        overdue_requests = self.search([
+            ('state', 'not in', ['repaired', 'scrap']),
+            ('scheduled_date', '<', fields.Datetime.now()),
+        ])
+        for request in overdue_requests:
+            request.message_post(
+                body='⚠️ This maintenance request is OVERDUE!',
+                message_type='notification',
+            )
+        return True
+
+    @api.model
+    def _cron_send_overdue_reminders(self):
+        """
+        Cron job: Send email reminders for overdue requests.
+        Sends notification to assigned technician or team leader.
+        """
+        template = self.env.ref('gearguard.email_template_request_overdue', raise_if_not_found=False)
+        if not template:
+            return True
+        
+        overdue_requests = self.search([
+            ('state', 'not in', ['repaired', 'scrap']),
+            ('scheduled_date', '<', fields.Datetime.now()),
+        ])
+        for request in overdue_requests:
+            if request.technician_id or request.team_id:
+                template.send_mail(request.id, force_send=True)
+        return True
+
+    @api.model
+    def _cron_update_statistics(self):
+        """
+        Cron job: Update maintenance statistics.
+        Recomputes stored computed fields for reporting.
+        """
+        # Trigger recomputation of is_overdue and days_overdue
+        all_requests = self.search([('state', 'not in', ['repaired', 'scrap'])])
+        all_requests._compute_is_overdue()
+        all_requests._compute_days_overdue()
+        return True
+
+    # ---------------------------
+    # Email Notification Methods
+    # ---------------------------
+    def action_send_status_notification(self):
+        """Send email notification when status changes."""
+        template = self.env.ref('gearguard.email_template_request_status_changed', raise_if_not_found=False)
+        if template:
+            for record in self:
+                template.send_mail(record.id, force_send=True)
+        return True
+

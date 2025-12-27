@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================
+         Email Templates for GearGuard
+         Notifications for maintenance workflow
+    ============================================= -->
+
+    <!-- Email Template: New Maintenance Request -->
+    <record id="email_template_request_created" model="mail.template">
+        <field name="name">Maintenance Request: New Request Created</field>
+        <field name="model_id" ref="model_maintenance_request"/>
+        <field name="subject">New Maintenance Request: {{ object.name }}</field>
+        <field name="email_from">{{ (object.company_id.email or user.email) }}</field>
+        <field name="email_to">{{ object.technician_id.email if object.technician_id else '' }}</field>
+        <field name="body_html" type="html">
+<div style="margin: 0px; padding: 0px; font-size: 14px;">
+    <p style="margin: 0px; padding: 0px; font-size: 14px;">
+        Hello <t t-out="object.technician_id.name or 'Team'"/>,
+    </p>
+    <br/>
+    <p>A new maintenance request has been created and assigned to you:</p>
+    <br/>
+    <table style="border-collapse: collapse; width: 100%;">
+        <tr>
+            <td style="padding: 8px; border: 1px solid #ddd;"><strong>Request</strong></td>
+            <td style="padding: 8px; border: 1px solid #ddd;"><t t-out="object.name"/></td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; border: 1px solid #ddd;"><strong>Equipment</strong></td>
+            <td style="padding: 8px; border: 1px solid #ddd;"><t t-out="object.equipment_id.name or 'N/A'"/></td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; border: 1px solid #ddd;"><strong>Type</strong></td>
+            <td style="padding: 8px; border: 1px solid #ddd;"><t t-out="object.request_type"/></td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; border: 1px solid #ddd;"><strong>Priority</strong></td>
+            <td style="padding: 8px; border: 1px solid #ddd;">
+                <t t-if="object.priority == '3'"><span style="color: red;">⚠️ URGENT</span></t>
+                <t t-elif="object.priority == '2'"><span style="color: orange;">High</span></t>
+                <t t-elif="object.priority == '1'">Normal</t>
+                <t t-else="">Low</t>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; border: 1px solid #ddd;"><strong>Scheduled Date</strong></td>
+            <td style="padding: 8px; border: 1px solid #ddd;"><t t-out="object.scheduled_date or 'Not scheduled'"/></td>
+        </tr>
+    </table>
+    <br/>
+    <p><a href="/web#id={{ object.id }}&amp;model=maintenance.request&amp;view_type=form" 
+          style="background-color: #875A7B; padding: 10px 20px; color: white; text-decoration: none; border-radius: 5px;">
+        View Request
+    </a></p>
+    <br/>
+    <p>Best regards,<br/>GearGuard Maintenance System</p>
+</div>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+    <!-- Email Template: Request Status Changed -->
+    <record id="email_template_request_status_changed" model="mail.template">
+        <field name="name">Maintenance Request: Status Updated</field>
+        <field name="model_id" ref="model_maintenance_request"/>
+        <field name="subject">Maintenance Request Update: {{ object.name }} - {{ object.state }}</field>
+        <field name="email_from">{{ (object.company_id.email or user.email) }}</field>
+        <field name="email_to">{{ object.create_uid.email }}</field>
+        <field name="body_html" type="html">
+<div style="margin: 0px; padding: 0px; font-size: 14px;">
+    <p style="margin: 0px; padding: 0px; font-size: 14px;">
+        Hello <t t-out="object.create_uid.name"/>,
+    </p>
+    <br/>
+    <p>The status of your maintenance request has been updated:</p>
+    <br/>
+    <table style="border-collapse: collapse; width: 100%;">
+        <tr>
+            <td style="padding: 8px; border: 1px solid #ddd;"><strong>Request</strong></td>
+            <td style="padding: 8px; border: 1px solid #ddd;"><t t-out="object.name"/></td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; border: 1px solid #ddd;"><strong>Equipment</strong></td>
+            <td style="padding: 8px; border: 1px solid #ddd;"><t t-out="object.equipment_id.name or 'N/A'"/></td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; border: 1px solid #ddd;"><strong>New Status</strong></td>
+            <td style="padding: 8px; border: 1px solid #ddd;">
+                <t t-if="object.state == 'new'"><span style="color: blue;">🆕 New</span></t>
+                <t t-elif="object.state == 'in_progress'"><span style="color: orange;">🔧 In Progress</span></t>
+                <t t-elif="object.state == 'repaired'"><span style="color: green;">✅ Repaired</span></t>
+                <t t-elif="object.state == 'scrap'"><span style="color: red;">❌ Scrapped</span></t>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; border: 1px solid #ddd;"><strong>Technician</strong></td>
+            <td style="padding: 8px; border: 1px solid #ddd;"><t t-out="object.technician_id.name or 'Unassigned'"/></td>
+        </tr>
+    </table>
+    <br/>
+    <p><a href="/web#id={{ object.id }}&amp;model=maintenance.request&amp;view_type=form" 
+          style="background-color: #875A7B; padding: 10px 20px; color: white; text-decoration: none; border-radius: 5px;">
+        View Request
+    </a></p>
+    <br/>
+    <p>Best regards,<br/>GearGuard Maintenance System</p>
+</div>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+    <!-- Email Template: Overdue Request Reminder -->
+    <record id="email_template_request_overdue" model="mail.template">
+        <field name="name">Maintenance Request: Overdue Reminder</field>
+        <field name="model_id" ref="model_maintenance_request"/>
+        <field name="subject">⚠️ OVERDUE: Maintenance Request {{ object.name }}</field>
+        <field name="email_from">{{ (object.company_id.email or user.email) }}</field>
+        <field name="email_to">{{ object.technician_id.email if object.technician_id else object.team_id.team_leader_id.email if object.team_id else '' }}</field>
+        <field name="body_html" type="html">
+<div style="margin: 0px; padding: 0px; font-size: 14px; background-color: #fff3cd; padding: 20px; border-radius: 5px;">
+    <p style="margin: 0px; padding: 0px; font-size: 18px; color: #856404;">
+        <strong>⚠️ OVERDUE MAINTENANCE REQUEST</strong>
+    </p>
+    <br/>
+    <p>The following maintenance request is overdue and requires immediate attention:</p>
+    <br/>
+    <table style="border-collapse: collapse; width: 100%; background: white;">
+        <tr>
+            <td style="padding: 8px; border: 1px solid #ddd;"><strong>Request</strong></td>
+            <td style="padding: 8px; border: 1px solid #ddd;"><t t-out="object.name"/></td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; border: 1px solid #ddd;"><strong>Equipment</strong></td>
+            <td style="padding: 8px; border: 1px solid #ddd;"><t t-out="object.equipment_id.name or 'N/A'"/></td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; border: 1px solid #ddd;"><strong>Scheduled Date</strong></td>
+            <td style="padding: 8px; border: 1px solid #ddd; color: red;"><t t-out="object.scheduled_date"/></td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; border: 1px solid #ddd;"><strong>Days Overdue</strong></td>
+            <td style="padding: 8px; border: 1px solid #ddd; color: red;"><strong><t t-out="object.days_overdue"/> days</strong></td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; border: 1px solid #ddd;"><strong>Team</strong></td>
+            <td style="padding: 8px; border: 1px solid #ddd;"><t t-out="object.team_id.name or 'Unassigned'"/></td>
+        </tr>
+    </table>
+    <br/>
+    <p><a href="/web#id={{ object.id }}&amp;model=maintenance.request&amp;view_type=form" 
+          style="background-color: #dc3545; padding: 10px 20px; color: white; text-decoration: none; border-radius: 5px;">
+        Take Action Now
+    </a></p>
+    <br/>
+    <p>Best regards,<br/>GearGuard Maintenance System</p>
+</div>
+        </field>
+        <field name="auto_delete" eval="False"/>
+    </record>
+
+    <!-- Email Template: Equipment Warranty Expiring -->
+    <record id="email_template_warranty_expiring" model="mail.template">
+        <field name="name">Equipment: Warranty Expiring Soon</field>
+        <field name="model_id" ref="model_maintenance_equipment"/>
+        <field name="subject">⏰ Warranty Expiring: {{ object.name }}</field>
+        <field name="email_from">{{ (object.company_id.email or user.email) }}</field>
+        <field name="email_to">{{ object.owner_id.email if object.owner_id else '' }}</field>
+        <field name="body_html" type="html">
+<div style="margin: 0px; padding: 0px; font-size: 14px;">
+    <p style="margin: 0px; padding: 0px; font-size: 14px;">
+        Hello <t t-out="object.owner_id.name or 'Manager'"/>,
+    </p>
+    <br/>
+    <p>The warranty for the following equipment is expiring soon:</p>
+    <br/>
+    <table style="border-collapse: collapse; width: 100%;">
+        <tr>
+            <td style="padding: 8px; border: 1px solid #ddd;"><strong>Equipment</strong></td>
+            <td style="padding: 8px; border: 1px solid #ddd;"><t t-out="object.name"/></td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; border: 1px solid #ddd;"><strong>Serial Number</strong></td>
+            <td style="padding: 8px; border: 1px solid #ddd;"><t t-out="object.serial_number or 'N/A'"/></td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; border: 1px solid #ddd;"><strong>Category</strong></td>
+            <td style="padding: 8px; border: 1px solid #ddd;"><t t-out="object.category_id.name or 'N/A'"/></td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; border: 1px solid #ddd;"><strong>Warranty Expires</strong></td>
+            <td style="padding: 8px; border: 1px solid #ddd; color: orange;"><t t-out="object.warranty_date"/></td>
+        </tr>
+    </table>
+    <br/>
+    <p>Consider renewing the warranty or planning for replacement.</p>
+    <br/>
+    <p><a href="/web#id={{ object.id }}&amp;model=maintenance.equipment&amp;view_type=form" 
+          style="background-color: #875A7B; padding: 10px 20px; color: white; text-decoration: none; border-radius: 5px;">
+        View Equipment
+    </a></p>
+    <br/>
+    <p>Best regards,<br/>GearGuard Maintenance System</p>
+</div>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+</odoo>

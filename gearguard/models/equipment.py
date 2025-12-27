@@ -51,6 +51,11 @@ class MaintenanceEquipment(models.Model):
         copy=False,
         help='Unique serial or asset number'
     )
+    model = fields.Char(
+        string='Model',
+        tracking=True,
+        help='Equipment model number or name'
+    )
     active = fields.Boolean(
         string='Active',
         default=True,
@@ -61,7 +66,7 @@ class MaintenanceEquipment(models.Model):
         attachment=True,
         help='Equipment photo'
     )
-    notes = fields.Html(
+    note = fields.Html(
         string='Notes',
         help='Additional notes about the equipment'
     )
@@ -81,6 +86,13 @@ class MaintenanceEquipment(models.Model):
     # ---------------------------
     # Ownership / Assignment
     # ---------------------------
+    owner_id = fields.Many2one(
+        comodel_name='res.users',
+        string='Owner',
+        index=True,
+        tracking=True,
+        help='User who owns or is responsible for this equipment'
+    )
     department_id = fields.Many2one(
         comodel_name='hr.department',
         string='Department',
@@ -97,9 +109,9 @@ class MaintenanceEquipment(models.Model):
     )
     owner_user_id = fields.Many2one(
         comodel_name='res.users',
-        string='Owner',
+        string='Owner User',
         tracking=True,
-        help='User who owns this equipment'
+        help='Alternative owner field (deprecated, use owner_id)'
     )
     
     # ---------------------------
@@ -137,6 +149,12 @@ class MaintenanceEquipment(models.Model):
         string='Warranty Expiry',
         tracking=True,
         help='Date when warranty expires'
+    )
+    warranty_date = fields.Date(
+        string='Warranty Date',
+        related='warranty_expiry',
+        store=True,
+        help='Alias for warranty expiry date (for compatibility)'
     )
     warranty_status = fields.Selection(
         selection=[
@@ -191,6 +209,11 @@ class MaintenanceEquipment(models.Model):
         string='Maintenance Count',
         compute='_compute_maintenance_count',
         help='Number of open maintenance requests'
+    )
+    request_count = fields.Integer(
+        string='Request Count',
+        compute='_compute_request_count',
+        help='Total number of maintenance requests'
     )
     
     # ---------------------------
@@ -257,6 +280,13 @@ class MaintenanceEquipment(models.Model):
             equipment.maintenance_count = self.env['maintenance.request'].search_count([
                 ('equipment_id', '=', equipment.id),
                 ('state', 'not in', ['repaired', 'scrap'])
+            ])
+
+    def _compute_request_count(self):
+        """Compute total number of maintenance requests."""
+        for equipment in self:
+            equipment.request_count = self.env['maintenance.request'].search_count([
+                ('equipment_id', '=', equipment.id),
             ])
 
     # ---------------------------
@@ -331,3 +361,70 @@ class MaintenanceEquipment(models.Model):
             'active': False,
         })
         self.message_post(body='Equipment marked as SCRAP and archived.')
+
+    # ---------------------------
+    # Scheduled Actions (Cron Jobs)
+    # ---------------------------
+    @api.model
+    def _cron_check_warranty_expiry(self):
+        """
+        Cron job: Check for equipment with expiring warranty.
+        Sends notifications for equipment with warranty expiring in 30 days.
+        """
+        from datetime import timedelta
+        
+        today = date.today()
+        warning_date = today + timedelta(days=30)
+        
+        expiring_equipment = self.search([
+            ('warranty_expiry', '>', today),
+            ('warranty_expiry', '<=', warning_date),
+            ('is_scrap', '=', False),
+        ])
+        
+        template = self.env.ref('gearguard.email_template_warranty_expiring', raise_if_not_found=False)
+        if template:
+            for equipment in expiring_equipment:
+                equipment.message_post(
+                    body=f'⏰ Warranty expiring in {equipment.days_to_warranty_expiry} days!',
+                    message_type='notification',
+                )
+                if equipment.owner_user_id:
+                    template.send_mail(equipment.id, force_send=True)
+        return True
+
+    @api.model
+    def _cron_generate_preventive_maintenance(self):
+        """
+        Cron job: Auto-generate preventive maintenance requests.
+        Creates scheduled maintenance for equipment based on category settings.
+        """
+        # Find equipment that needs preventive maintenance
+        # This is a placeholder - can be enhanced with maintenance schedule settings
+        equipment_list = self.search([
+            ('is_scrap', '=', False),
+            ('team_id', '!=', False),
+        ])
+        
+        # Log action
+        for equipment in equipment_list:
+            # Check if there's already a pending preventive maintenance request
+            existing = self.env['maintenance.request'].search([
+                ('equipment_id', '=', equipment.id),
+                ('request_type', '=', 'preventive'),
+                ('state', 'in', ['new', 'in_progress']),
+            ], limit=1)
+            
+            if not existing:
+                # Can create preventive maintenance based on schedule
+                # This is a placeholder for more complex scheduling logic
+                pass
+        return True
+
+    # ---------------------------
+    # Reporting Methods
+    # ---------------------------
+    def action_print_equipment_report(self):
+        """Print equipment report PDF."""
+        return self.env.ref('gearguard.action_report_equipment').report_action(self)
+

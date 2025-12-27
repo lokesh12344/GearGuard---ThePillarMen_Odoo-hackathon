@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================
+         PDF Report Template for Maintenance Request
+         Printable maintenance work order
+    ============================================= -->
+
+    <!-- Report Action -->
+    <record id="action_report_maintenance_request" model="ir.actions.report">
+        <field name="name">Maintenance Work Order</field>
+        <field name="model">maintenance.request</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">gearguard.report_maintenance_request</field>
+        <field name="report_file">gearguard.report_maintenance_request</field>
+        <field name="print_report_name">'Work_Order_%s' % (object.name.replace(' ', '_'))</field>
+        <field name="binding_model_id" ref="model_maintenance_request"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- Report Template -->
+    <template id="report_maintenance_request">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <!-- Header -->
+                        <div class="row mb-4">
+                            <div class="col-12 text-center">
+                                <h2 style="color: #875A7B;">
+                                    <strong>MAINTENANCE WORK ORDER</strong>
+                                </h2>
+                                <h4><t t-esc="doc.name"/></h4>
+                            </div>
+                        </div>
+
+                        <!-- Status Badge -->
+                        <div class="row mb-4">
+                            <div class="col-12 text-center">
+                                <span t-if="doc.state == 'new'" 
+                                      class="badge" style="background-color: #17a2b8; color: white; font-size: 14px; padding: 8px 16px;">
+                                    Status: NEW
+                                </span>
+                                <span t-if="doc.state == 'in_progress'" 
+                                      class="badge" style="background-color: #ffc107; color: black; font-size: 14px; padding: 8px 16px;">
+                                    Status: IN PROGRESS
+                                </span>
+                                <span t-if="doc.state == 'repaired'" 
+                                      class="badge" style="background-color: #28a745; color: white; font-size: 14px; padding: 8px 16px;">
+                                    Status: REPAIRED
+                                </span>
+                                <span t-if="doc.state == 'scrap'" 
+                                      class="badge" style="background-color: #dc3545; color: white; font-size: 14px; padding: 8px 16px;">
+                                    Status: SCRAPPED
+                                </span>
+                                
+                                <span t-if="doc.priority == '3'" 
+                                      class="badge ms-2" style="background-color: #dc3545; color: white; font-size: 14px; padding: 8px 16px;">
+                                    ⚠️ URGENT
+                                </span>
+                                <span t-if="doc.priority == '2'" 
+                                      class="badge ms-2" style="background-color: #fd7e14; color: white; font-size: 14px; padding: 8px 16px;">
+                                    HIGH PRIORITY
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Request Details -->
+                        <div class="row">
+                            <div class="col-6">
+                                <table class="table table-bordered">
+                                    <tr class="table-secondary">
+                                        <th colspan="2">Request Information</th>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 40%;"><strong>Request ID</strong></td>
+                                        <td><t t-esc="doc.id"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Type</strong></td>
+                                        <td>
+                                            <t t-if="doc.request_type == 'corrective'">Corrective (Breakdown)</t>
+                                            <t t-else="">Preventive (Routine)</t>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Priority</strong></td>
+                                        <td>
+                                            <t t-if="doc.priority == '0'">Low</t>
+                                            <t t-if="doc.priority == '1'">Normal</t>
+                                            <t t-if="doc.priority == '2'">High</t>
+                                            <t t-if="doc.priority == '3'">Urgent</t>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Created Date</strong></td>
+                                        <td><t t-esc="doc.create_date" t-options="{'widget': 'datetime'}"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Scheduled Date</strong></td>
+                                        <td><t t-esc="doc.scheduled_date" t-options="{'widget': 'datetime'}"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Duration (Hours)</strong></td>
+                                        <td><t t-esc="doc.duration or 0.0"/></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-6">
+                                <table class="table table-bordered">
+                                    <tr class="table-secondary">
+                                        <th colspan="2">Assignment</th>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 40%;"><strong>Team</strong></td>
+                                        <td><t t-esc="doc.team_id.name or 'Unassigned'"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Technician</strong></td>
+                                        <td><t t-esc="doc.technician_id.name or 'Unassigned'"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Created By</strong></td>
+                                        <td><t t-esc="doc.create_uid.name"/></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Equipment Details -->
+                        <div class="row mt-3" t-if="doc.equipment_id">
+                            <div class="col-12">
+                                <table class="table table-bordered">
+                                    <tr class="table-secondary">
+                                        <th colspan="4">Equipment Details</th>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 20%;"><strong>Equipment</strong></td>
+                                        <td style="width: 30%;"><t t-esc="doc.equipment_id.name"/></td>
+                                        <td style="width: 20%;"><strong>Serial Number</strong></td>
+                                        <td style="width: 30%;"><t t-esc="doc.equipment_id.serial_number or 'N/A'"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Category</strong></td>
+                                        <td><t t-esc="doc.category_id.name or 'N/A'"/></td>
+                                        <td><strong>Location</strong></td>
+                                        <td><t t-esc="doc.equipment_id.location or 'N/A'"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Model</strong></td>
+                                        <td><t t-esc="doc.equipment_id.model or 'N/A'"/></td>
+                                        <td><strong>Warranty Until</strong></td>
+                                        <td><t t-esc="doc.equipment_id.warranty_date" t-options="{'widget': 'date'}"/></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <table class="table table-bordered">
+                                    <tr class="table-secondary">
+                                        <th>Problem Description</th>
+                                    </tr>
+                                    <tr>
+                                        <td style="min-height: 100px;">
+                                            <t t-if="doc.description" t-raw="doc.description"/>
+                                            <t t-else=""><em>No description provided</em></t>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Work Done Section (Blank for filling) -->
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <table class="table table-bordered">
+                                    <tr class="table-secondary">
+                                        <th>Work Performed</th>
+                                    </tr>
+                                    <tr>
+                                        <td style="min-height: 150px; height: 150px;">
+                                            <br/><br/><br/><br/><br/><br/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Parts Used Section -->
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <table class="table table-bordered">
+                                    <tr class="table-secondary">
+                                        <th colspan="4">Parts/Materials Used</th>
+                                    </tr>
+                                    <tr>
+                                        <th style="width: 10%;">#</th>
+                                        <th style="width: 50%;">Part Description</th>
+                                        <th style="width: 20%;">Quantity</th>
+                                        <th style="width: 20%;">Cost</th>
+                                    </tr>
+                                    <tr><td>1</td><td></td><td></td><td></td></tr>
+                                    <tr><td>2</td><td></td><td></td><td></td></tr>
+                                    <tr><td>3</td><td></td><td></td><td></td></tr>
+                                    <tr><td>4</td><td></td><td></td><td></td></tr>
+                                    <tr><td>5</td><td></td><td></td><td></td></tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Signatures -->
+                        <div class="row mt-4">
+                            <div class="col-6 text-center">
+                                <p style="border-top: 1px solid black; padding-top: 5px;">
+                                    <strong>Technician Signature</strong>
+                                </p>
+                                <p><t t-esc="doc.technician_id.name or '_______________'"/></p>
+                                <p>Date: _______________</p>
+                            </div>
+                            <div class="col-6 text-center">
+                                <p style="border-top: 1px solid black; padding-top: 5px;">
+                                    <strong>Approved By</strong>
+                                </p>
+                                <p>_______________</p>
+                                <p>Date: _______________</p>
+                            </div>
+                        </div>
+
+                        <!-- Footer -->
+                        <div class="row mt-4">
+                            <div class="col-12 text-center">
+                                <small style="color: #666;">
+                                    Generated by GearGuard Maintenance System | 
+                                    <t t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d %H:%M:%S')"/>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <!-- Equipment Report -->
+    <record id="action_report_equipment" model="ir.actions.report">
+        <field name="name">Equipment Report</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">gearguard.report_equipment</field>
+        <field name="report_file">gearguard.report_equipment</field>
+        <field name="print_report_name">'Equipment_%s' % (object.name.replace(' ', '_'))</field>
+        <field name="binding_model_id" ref="model_maintenance_equipment"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_equipment">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="row mb-4">
+                            <div class="col-12 text-center">
+                                <h2 style="color: #875A7B;"><strong>EQUIPMENT RECORD</strong></h2>
+                                <h3><t t-esc="doc.name"/></h3>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6">
+                                <table class="table table-bordered">
+                                    <tr class="table-secondary">
+                                        <th colspan="2">Equipment Information</th>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Name</strong></td>
+                                        <td><t t-esc="doc.name"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Serial Number</strong></td>
+                                        <td><t t-esc="doc.serial_number or 'N/A'"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Model</strong></td>
+                                        <td><t t-esc="doc.model or 'N/A'"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Category</strong></td>
+                                        <td><t t-esc="doc.category_id.name or 'N/A'"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Location</strong></td>
+                                        <td><t t-esc="doc.location or 'N/A'"/></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-6">
+                                <table class="table table-bordered">
+                                    <tr class="table-secondary">
+                                        <th colspan="2">Ownership &amp; Dates</th>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Owner</strong></td>
+                                        <td><t t-esc="doc.owner_id.name or 'N/A'"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Department</strong></td>
+                                        <td><t t-esc="doc.department_id.name or 'N/A'"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Purchase Date</strong></td>
+                                        <td><t t-esc="doc.purchase_date" t-options="{'widget': 'date'}"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Warranty Until</strong></td>
+                                        <td><t t-esc="doc.warranty_date" t-options="{'widget': 'date'}"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Status</strong></td>
+                                        <td>
+                                            <t t-if="doc.is_scrap">
+                                                <span style="color: red;">SCRAPPED</span>
+                                            </t>
+                                            <t t-else="">
+                                                <span style="color: green;">ACTIVE</span>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Maintenance Team -->
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <table class="table table-bordered">
+                                    <tr class="table-secondary">
+                                        <th colspan="2">Maintenance Assignment</th>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 30%;"><strong>Default Team</strong></td>
+                                        <td><t t-esc="doc.team_id.name or 'N/A'"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Default Technician</strong></td>
+                                        <td><t t-esc="doc.technician_id.name or 'N/A'"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Total Maintenance Requests</strong></td>
+                                        <td><t t-esc="doc.request_count"/></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Notes -->
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <table class="table table-bordered">
+                                    <tr class="table-secondary">
+                                        <th>Notes</th>
+                                    </tr>
+                                    <tr>
+                                        <td style="min-height: 100px;">
+                                            <t t-if="doc.note" t-raw="doc.note"/>
+                                            <t t-else=""><em>No notes</em></t>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col-12 text-center">
+                                <small style="color: #666;">
+                                    Generated by GearGuard | 
+                                    <t t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d %H:%M:%S')"/>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

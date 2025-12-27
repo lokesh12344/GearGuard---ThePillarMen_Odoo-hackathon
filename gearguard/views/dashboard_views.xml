@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================
+         GearGuard Dashboard
+         Shows KPIs and statistics for maintenance
+    ============================================= -->
+
+    <!-- Dashboard Action -->
+    <record id="action_maintenance_dashboard" model="ir.actions.act_window">
+        <field name="name">Maintenance Dashboard</field>
+        <field name="res_model">maintenance.dashboard</field>
+        <field name="view_mode">kanban,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Your maintenance dashboard is ready!
+            </p>
+        </field>
+    </record>
+
+    <!-- Dashboard Kanban View with KPI Cards -->
+    <record id="view_maintenance_dashboard_kanban" model="ir.ui.view">
+        <field name="name">maintenance.dashboard.kanban</field>
+        <field name="model">maintenance.dashboard</field>
+        <field name="arch" type="xml">
+            <kanban create="false" edit="false" class="o_kanban_dashboard">
+                <field name="name"/>
+                <field name="kanban_dashboard_graph"/>
+                <field name="color"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="#{!selection_mode ? kanban_color(record.color.raw_value) : ''} oe_kanban_global_click">
+                            <div class="o_kanban_card_header">
+                                <div class="o_kanban_card_header_title mb16">
+                                    <div class="o_primary">
+                                        <strong><field name="name"/></strong>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="container o_kanban_card_content">
+                                <div class="row">
+                                    <div class="col-6 o_kanban_primary_left">
+                                        <span class="badge rounded-pill text-bg-primary">
+                                            <field name="value"/> <field name="label"/>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div t-if="record.kanban_dashboard_graph.raw_value" class="o_kanban_graph_section">
+                                    <field name="kanban_dashboard_graph" widget="dashboard_graph"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Equipment Statistics View - Pivot -->
+    <record id="view_equipment_pivot_analysis" model="ir.ui.view">
+        <field name="name">maintenance.equipment.pivot.analysis</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="arch" type="xml">
+            <pivot string="Equipment Analysis" sample="1">
+                <field name="category_id" type="row"/>
+                <field name="team_id" type="col"/>
+                <field name="id" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Equipment Statistics - Graph -->
+    <record id="view_equipment_graph_analysis" model="ir.ui.view">
+        <field name="name">maintenance.equipment.graph.analysis</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="arch" type="xml">
+            <graph string="Equipment by Category" type="pie" sample="1">
+                <field name="category_id"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Maintenance Request Statistics - Pivot -->
+    <record id="view_request_pivot_analysis" model="ir.ui.view">
+        <field name="name">maintenance.request.pivot.analysis</field>
+        <field name="model">maintenance.request</field>
+        <field name="arch" type="xml">
+            <pivot string="Request Analysis" sample="1">
+                <field name="state" type="row"/>
+                <field name="team_id" type="col"/>
+                <field name="duration" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Maintenance Request - Graph by State -->
+    <record id="view_request_graph_state" model="ir.ui.view">
+        <field name="name">maintenance.request.graph.state</field>
+        <field name="model">maintenance.request</field>
+        <field name="arch" type="xml">
+            <graph string="Requests by Status" type="bar" sample="1">
+                <field name="state"/>
+                <field name="id" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Maintenance Request - Graph by Priority -->
+    <record id="view_request_graph_priority" model="ir.ui.view">
+        <field name="name">maintenance.request.graph.priority</field>
+        <field name="model">maintenance.request</field>
+        <field name="arch" type="xml">
+            <graph string="Requests by Priority" type="pie" sample="1">
+                <field name="priority"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Overdue Requests Action -->
+    <record id="action_overdue_requests" model="ir.actions.act_window">
+        <field name="name">Overdue Requests</field>
+        <field name="res_model">maintenance.request</field>
+        <field name="view_mode">tree,form,kanban</field>
+        <field name="domain">[('is_overdue', '=', True), ('state', 'not in', ['repaired', 'scrap'])]</field>
+        <field name="context">{'search_default_group_by_team': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No overdue requests!
+            </p>
+            <p>All maintenance requests are on schedule.</p>
+        </field>
+    </record>
+
+    <!-- High Priority Requests Action -->
+    <record id="action_high_priority_requests" model="ir.actions.act_window">
+        <field name="name">Urgent Requests</field>
+        <field name="res_model">maintenance.request</field>
+        <field name="view_mode">tree,form,kanban</field>
+        <field name="domain">[('priority', 'in', ['2', '3']), ('state', 'not in', ['repaired', 'scrap'])]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No urgent requests!
+            </p>
+        </field>
+    </record>
+
+    <!-- Equipment Under Warranty Action -->
+    <record id="action_equipment_warranty" model="ir.actions.act_window">
+        <field name="name">Equipment Under Warranty</field>
+        <field name="res_model">maintenance.equipment</field>
+        <field name="view_mode">tree,form,kanban</field>
+        <field name="domain">[('warranty_date', '>=', context_today().strftime('%Y-%m-%d'))]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No equipment under warranty
+            </p>
+        </field>
+    </record>
+
+    <!-- Analysis Menu Items -->
+    <menuitem id="menu_maintenance_reporting_root"
+        name="Reporting"
+        parent="gearguard.menu_gearguard_root"
+        sequence="50"/>
+
+    <menuitem id="menu_equipment_analysis"
+        name="Equipment Analysis"
+        parent="menu_maintenance_reporting_root"
+        action="action_equipment_analysis"
+        sequence="10"/>
+
+    <menuitem id="menu_request_analysis"
+        name="Request Analysis"
+        parent="menu_maintenance_reporting_root"
+        action="action_request_analysis"
+        sequence="20"/>
+
+    <menuitem id="menu_overdue_requests"
+        name="Overdue Requests"
+        parent="menu_maintenance_reporting_root"
+        action="action_overdue_requests"
+        sequence="30"/>
+
+    <!-- Analysis Actions -->
+    <record id="action_equipment_analysis" model="ir.actions.act_window">
+        <field name="name">Equipment Analysis</field>
+        <field name="res_model">maintenance.equipment</field>
+        <field name="view_mode">graph,pivot,tree</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'graph', 'view_id': ref('view_equipment_graph_analysis')}),
+            (0, 0, {'view_mode': 'pivot', 'view_id': ref('view_equipment_pivot_analysis')})]"/>
+    </record>
+
+    <record id="action_request_analysis" model="ir.actions.act_window">
+        <field name="name">Request Analysis</field>
+        <field name="res_model">maintenance.request</field>
+        <field name="view_mode">graph,pivot,tree</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'graph', 'view_id': ref('view_request_graph_state')}),
+            (0, 0, {'view_mode': 'pivot', 'view_id': ref('view_request_pivot_analysis')})]"/>
+    </record>
+
+</odoo>

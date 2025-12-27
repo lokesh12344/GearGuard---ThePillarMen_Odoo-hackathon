@@ -62,7 +62,13 @@ Authors: ThePillarMen Team
         'views/maintenance_team_views.xml',
         'views/equipment_views.xml',
         'views/maintenance_request_views.xml',
+        'views/dashboard_views.xml',
         'views/menu_views.xml',
+        # Reports
+        'report/maintenance_reports.xml',
+        # Data
+        'data/email_templates.xml',
+        'data/scheduled_actions.xml',
     ],
     'demo': [
         'data/demo_data.xml',
