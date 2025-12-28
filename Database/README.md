@@ -130,4 +130,6 @@ Run `python3 init_db.py` to create the database
 Ensure you have write permissions in the Database directory
 
 ### Import errors
-Install required packages: `pip install bcrypt sqlite3`
+Install required packages: `pip install bcrypt`
+
+Note: sqlite3 is part of Python's standard library and doesn't need separate installation.

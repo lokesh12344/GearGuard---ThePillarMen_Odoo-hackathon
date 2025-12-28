@@ -10,6 +10,8 @@ import bcrypt
 from pathlib import Path
 
 # Default password for all employees
+# WARNING: This is a weak password for development/demo purposes only.
+# In production, use strong passwords and require password changes on first login.
 DEFAULT_PASSWORD = 'gearguard123'
 
 # Database path
@@ -169,6 +171,8 @@ def create_database():
     print(f"   Email: rajesh.kumar@gearguard.com")
     print(f"   Password: {DEFAULT_PASSWORD}")
     print(f"\n🔐 All employee passwords are set to: {DEFAULT_PASSWORD}")
+    print(f"\n⚠️  WARNING: Default password is for development/demo only!")
+    print(f"   In production, use strong passwords and enable password change on first login.")
 
 def main():
     """Main entry point"""
