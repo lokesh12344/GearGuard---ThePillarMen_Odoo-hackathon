@@ -6,9 +6,10 @@ CREATE TABLE employee (
     designation TEXT NOT NULL,
     location_block TEXT NOT NULL,
     location_desk TEXT NOT NULL,
-    contact_email TEXT,
+    contact_email TEXT UNIQUE,
     contact_phone TEXT,
-    hire_date DATE NOT NULL
+    hire_date DATE NOT NULL,
+    password TEXT NOT NULL
 );
 
 CREATE TABLE equipment (
